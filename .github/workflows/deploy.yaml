@@ -12,7 +12,7 @@ jobs:
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - id: build
         run: |
-          docker build --tag dyrits/docker-react
+          docker build --tag dyrits/docker-react .
           docker push dyrits/docker-react
 
   test:
@@ -20,5 +20,4 @@ jobs:
     needs: publish
     steps:
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker pull dyrits/docker-react:latest
-      - run: docker run -e CI=true dyrits/docker-react:latest npm test
+      - run: docker run -it dyrits/docker-react:latest npm test
