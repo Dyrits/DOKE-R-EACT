@@ -7,19 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      image-tag: ${{ steps.build.outputs.image-tag }}
     steps:
       - uses: actions/checkout@v4
       - run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - id: build
-        run: |
-          docker build --tag dyrits/docker-react:${{ env.TIMESTAMP }} .
-          echo "::set-output name=image-tag::dyrits/docker-react:${{ env.TIMESTAMP }}"
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - run: docker run -e CI=true ${{ needs.build.outputs.image-tag }} npm test
+      - run: docker build --tag dyrits/docker-react:${{ env.TIMESTAMP }} .
+      - run: docker run -e CI=true dyrits/docker-react:${{ env.TIMESTAMP }} npm test
